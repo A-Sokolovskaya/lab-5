@@ -1,0 +1,106 @@
+{Задание 10
+В АВЛ-дереве найти все узлы, у которых высоты левых и правых поддеревьев неравны. 
+Вывести значения этих узлов.
+30 20 50 15 25 39 65 0 23 28 43 60 70}
+
+program lab5;
+
+type
+  Pt = ^Tree;
+  Tree = record
+    Digit: integer;
+    HeadL: Pt;
+    HeadR: Pt; 
+  end;
+
+procedure Creation(var root: Pt; a: integer);
+begin
+  if Root = nil then
+  begin
+    new(Root); 
+    Root^.Digit := a;
+    Root^.HeadL := nil;
+    Root^.HeadR := nil;
+  end
+  else
+  if a < Root^.Digit then
+    Creation(Root^.HeadL, a)
+  else
+    Creation(Root^.HeadR, a);
+end;
+
+procedure Print(Root: Pt; ots: integer);
+
+begin
+  if Root <> nil then
+  begin
+    Print(Root^.HeadR, ots + 3);
+    writeln(' ': ots, Root^.Digit);
+    Print(Root^.HeadL, ots + 3);
+  end;
+end;
+
+
+
+function Gl(root: Pt): integer;
+var
+  l, p: integer;
+begin
+  if root = nil then
+    result := 0;
+  if root <> nil then
+  begin
+    l := Gl(Root^.HeadL)+1;
+    p := Gl(Root^.HeadR)+1;
+    if l > p then
+      Result := 1
+    else 
+      Result := p;
+  end;
+end;
+
+procedure PrintFin (Root:Pt);
+begin
+  if Root<>nil then
+  begin
+    if Gl(Root^.HeadR) <>Gl(Root^.HeadL) then
+      write (root^.digit, ' ');
+    PrintFin (Root^.HeadR);
+    PrintFin (Root^.HeadL); 
+  end;
+end;
+
+
+var
+  str: string;
+  a, ots, o, i, l, p: integer;
+  root: Pt;
+  mas:array of string;
+
+begin
+  writeln ('Введите строку из чисел (любой длинны, избегайте повторения) через пробел:');
+  readln (str);
+  if str[length(str)]<>' ' then 
+    str:=str+' ';
+  for var j:=1 to length(str) do
+    if str[j]=' ' then
+      o:=o+1;
+  SetLength(mas,o+1);
+  i:=0;
+  while length(str) > 0 do
+  begin
+    i := i + 1;  
+    mas[i]:=copy(str, 1, pos(' ', str)-1);
+    delete(str, 1, pos(' ', str));
+  end;
+  for var j := 1 to o do
+  begin
+    a:=strtoint(mas[j]);
+    Creation(root, a);
+  end;
+  writeln('Дерево:');
+  writeln;
+  Print(Root, ots);
+  writeln ('Узлы, у которых высоты левых и правых поддеревьев не равны:');
+  PrintFin (root);
+end.  
